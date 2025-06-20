@@ -16,7 +16,7 @@ def get_records():
     try:
         with conn.cursor() as cursor:
             cursor.execute("""
-                SELECT record_id, s.name AS látka, l.name AS lokace, year AS rok
+                SELECT record_id, s.name AS látka, amount as množství, l.name AS lokace, year AS rok
                 FROM records r
                 JOIN substances s ON r.substance_id = s.substance_id
                 JOIN locations l ON r.location_id = l.location_id;
@@ -34,9 +34,9 @@ def get_records():
         raise
 
 class Record(BaseModel):
-    substance_name: int
+    substance_name: str
     amount: int
-    location_name: int
+    location_name: str
     year: int
 
 def add_record():
@@ -63,11 +63,6 @@ def add_record():
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
-
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}
 
 @app.get("/records")
 async def records():

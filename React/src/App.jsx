@@ -30,13 +30,12 @@ function App() {
 
         const data = await response.json();
         console.log('Response:', data);
-        alert('Record submitted!');
     };
 
     return (
         <form onSubmit={handleSubmit}>
             <div>
-                <label>Substance Name:</label>
+                <label>Látka:</label>
                 <input
                     type="text"
                     name="substance_name"
@@ -46,7 +45,7 @@ function App() {
                 />
             </div>
             <div>
-                <label>Amount:</label>
+                <label>Množství:</label>
                 <input
                     type="number"
                     step="any"
@@ -57,7 +56,7 @@ function App() {
                 />
             </div>
             <div>
-                <label>Location Name:</label>
+                <label>Místo uložení:</label>
                 <input
                     type="text"
                     name="location_name"
@@ -67,7 +66,7 @@ function App() {
                 />
             </div>
             <div>
-                <label>Year:</label>
+                <label>Rok:</label>
                 <input
                     type="number"
                     name="year"

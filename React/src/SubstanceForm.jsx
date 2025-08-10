@@ -20,7 +20,6 @@ function SubstanceForm() {
                 if (!response.ok) throw new Error('Chyba při načítání jednotek');
                 const data = await response.json();
                 setUnits(data);
-                substance.unit = units[0]
                 setSubstance((prev) => ({
                     ...prev,
                     unit: data.length > 0 ? data[0] : '',
@@ -48,13 +47,13 @@ function SubstanceForm() {
         newVlastnosti[index][field] = value;
         setVlastnosti(newVlastnosti);
 
-        // Update substance.properties properly
+        // aktualizace substance.properties
         setSubstance((prev) => ({
             ...prev,
             properties: newVlastnosti.filter(v => v.nazev.trim() && v.kategorie.trim())
         }));
 
-        // Add new empty row if last one is filled
+        // pokud je to poslední řádek a je kompletně vyplněný → přidáme nový prázdný
         if (
             index === vlastnosti.length - 1 &&
             newVlastnosti[index].nazev.trim() !== '' &&
@@ -62,6 +61,18 @@ function SubstanceForm() {
         ) {
             setVlastnosti([...newVlastnosti, { nazev: '', kategorie: '' }]);
         }
+    };
+
+    const removePropertyRow = (index) => {
+        // mazání řádku
+        const updated = vlastnosti.filter((_, i) => i !== index);
+        setVlastnosti(updated.length > 0 ? updated : [{ nazev: '', kategorie: '' }]);
+
+        // aktualizace properties v substance
+        setSubstance((prev) => ({
+            ...prev,
+            properties: updated.filter(v => v.nazev.trim() && v.kategorie.trim())
+        }));
     };
 
     const handleSubmit = async (e) => {
@@ -99,7 +110,6 @@ function SubstanceForm() {
                         value={substance.physical_form}
                         onChange={handleChange}
                         className="form-select"
-                        required
                     >
                         <option value="">Vyberte formu...</option>
                         <option value="Pevná">Pevná</option>
@@ -132,17 +142,29 @@ function SubstanceForm() {
                 <div className="mb-3">
                     <label className="form-label fw-bold">Vlastnosti</label>
                     {vlastnosti.map((vlastnost, i) => (
-                        <div key={i} className="row g-2 mb-2">
-                            <div className="col-md-6">
+                        <div key={i} className="row g-2 mb-2 align-items-center">
+                            <div className="col-md-5">
                                 <input
                                     type="text"
                                     placeholder="Název vlastnosti"
                                     value={vlastnost.nazev}
                                     onChange={(e) => handlePropertyChange(i, 'nazev', e.target.value)}
                                     className="form-control"
+                                    list="datalistOptions"
                                 />
+                                {loadingUnits ? (
+                                    <div className="form-text">Načítám vlastnosti...</div>
+                                ) : (
+                                <datalist id="datalistOptions">
+                                    {units.map((unit) => (
+                                        <option key={unit} value={unit}>
+                                            {unit}
+                                        </option>
+                                    ))}
+                                </datalist>
+                                )}
                             </div>
-                            <div className="col-md-6">
+                            <div className="col-md-5">
                                 <input
                                     type="text"
                                     placeholder="Kategorie"
@@ -150,6 +172,16 @@ function SubstanceForm() {
                                     onChange={(e) => handlePropertyChange(i, 'kategorie', e.target.value)}
                                     className="form-control"
                                 />
+                            </div>
+                            <div className="col-md-2 text-end">
+                                <button
+                                    type="button"
+                                    className="btn btn-danger"
+                                    onClick={() => removePropertyRow(i)}
+                                    disabled={vlastnosti.length === 1 && !vlastnosti[0].nazev && !vlastnosti[0].kategorie}
+                                >
+                                    Smazat
+                                </button>
                             </div>
                         </div>
                     ))}

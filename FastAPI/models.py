@@ -3,10 +3,10 @@ from pydantic import BaseModel
 
 
 class Unit(Enum):
-    KG = "kg"
     G = "g"
-    L = "l"
+    KG = "kg"
     ML = "ml"
+    L = "l"
     KS = "ks"
 
 
@@ -22,6 +22,7 @@ class Substance(BaseModel):
     #acute_toxicity: int auto add by properties
     properties: list[dict[str, str]]
     unit: Unit
+    # bezpecnostni list
 
 
 class Record(BaseModel):

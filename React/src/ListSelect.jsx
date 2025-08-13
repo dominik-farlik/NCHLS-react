@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 
-function SelectAny({ endpoint, label, onChange, value }) {
+function ListSelect({ endpoint, label, onChange, value, name }) {
     const [internalValue, setInternalValue] = useState(value || "");
     const [options, setOptions] = useState([]);
     const [loadingOptions, setLoadingOptions] = useState(true);
@@ -43,7 +43,7 @@ function SelectAny({ endpoint, label, onChange, value }) {
                 <div className="form-text">Načítám data...</div>
             ) : (
                 <select
-                    name={endpoint}
+                    name={name}
                     value={internalValue}
                     onChange={handleChange}
                     className="form-select"
@@ -62,4 +62,4 @@ function SelectAny({ endpoint, label, onChange, value }) {
     );
 }
 
-export default SelectAny;
+export default ListSelect;

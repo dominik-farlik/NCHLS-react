@@ -1,8 +1,11 @@
 from bson import ObjectId
+from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
 from pymongo import MongoClient
 import os
 import logging
+
+from pymongo.errors import DuplicateKeyError
 
 logger = logging.getLogger(__name__)
 
@@ -17,8 +20,19 @@ db = client.nchls
 
 def insert_substance(data: dict):
     """Insert a substance into the collection and return inserted ID."""
-    result = db.substances.insert_one(jsonable_encoder(data))
-    return result.inserted_id
+    if db.substances.find_one({"name": data.get("name")}):
+        raise HTTPException(
+            status_code=400,
+            detail = "Látka s názvem {} již existuje.".format(data.get('name'))
+        )
+    try:
+        result = db.substances.insert_one(jsonable_encoder(data))
+        return result.inserted_id
+    except DuplicateKeyError:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Substance with name '{data.get('name')}' already exists.",
+        )
 
 
 def insert_record(data: dict):

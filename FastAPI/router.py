@@ -57,6 +57,7 @@ async def save_safety_sheet(substance_id: str, safety_sheet: UploadFile = File(.
         file_path = UPLOAD_DIR / f"{substance_id}"
         with file_path.open("wb") as buffer:
             shutil.copyfileobj(safety_sheet.file, buffer)
+        logger.info(f"Adding safety_sheet for {substance_id}")
         add_safety_sheet(substance_id)
         return JSONResponse(content={"message": "Safety sheet uploaded successfully", "file_path": str(file_path)})
     except Exception as e:

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import SelectCategory from "./SelectCategory.jsx";
-import SelectAny from "./SelectAny.jsx";
+import ListSelect from "./ListSelect.jsx";
 import ImageUploadPreview from "./ImageUploadPreview.jsx";
 
 function SubstanceForm() {
@@ -13,6 +13,8 @@ function SubstanceForm() {
     });
 
     const [propertyList, setPropertyList] = useState([]);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
 
     useEffect(() => {
         async function fetchPropertyList() {
@@ -83,31 +85,61 @@ function SubstanceForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await fetch('http://localhost:8000/add_substance', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(substance),
-        });
-        const data = await response.json();
-        console.log('Response:', data);
+        setErrorMessage('');
+        setSuccessMessage('');
+        let payload = { ...substance };
+        try {
+            if (
+                payload.properties.length === 1 &&
+                payload.properties[0].name.trim() === '' &&
+                payload.properties[0].category.trim() === ''
+            ) {
+                payload = { ...payload, properties: [] };
+            }
 
-        if (substance.safety_sheet) {
-            const substanceId = data.id;
-            const fileFormData = new FormData();
-            fileFormData.append('safety_sheet', substance.safety_sheet);
-            const fileResponse = await fetch(`http://localhost:8000/${substanceId}/add_safety_sheet`, {
+            const response = await fetch('http://localhost:8000/add_substance', {
                 method: 'POST',
-                body: fileFormData,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
             });
 
-            const fileData = await fileResponse.json();
-            console.log('File Response:', fileData);
+            if (!response.ok) {
+                setErrorMessage((await response.json()).detail);
+                return;
+            }
+
+            const data = await response.json();
+            setSuccessMessage('Látka byla úspěšně přidána.');
+
+            if (substance.safety_sheet) {
+                const substanceId = data.id;
+                const fileFormData = new FormData();
+                fileFormData.append('safety_sheet', substance.safety_sheet);
+
+                const fileResponse = await fetch(`http://localhost:8000/${substanceId}/add_safety_sheet`, {
+                    method: 'POST',
+                    body: fileFormData,
+                });
+
+                if (!fileResponse.ok) {
+                    const fileErrorText = await fileResponse.text();
+                    setErrorMessage(`Látka byla přidána, ale nepodařilo se nahrát bezpečnostní list: ${fileErrorText}`);
+                    return;
+                }
+
+                setSuccessMessage('Látka a bezpečnostní list byly úspěšně přidány.');
+            }
+        } catch (err) {
+            setErrorMessage(`Neočekávaná chyba: ${err.message}`);
         }
     };
 
     return (
         <div className="container mt-5">
             <h2 className="mb-4">Přidat látku</h2>
+            {!successMessage && !errorMessage && <div className="alert">&nbsp;</div>}
+            {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+            {successMessage && <div className="alert alert-success">{successMessage}</div>}
             <form onSubmit={handleSubmit} className="p-4 border rounded bg-light shadow-sm">
                 <div className="mb-3">
                     <label className="form-label fw-bold">Název</label>
@@ -138,7 +170,8 @@ function SubstanceForm() {
                 </div>
 
                 <div className="mb-3">
-                    <SelectAny
+                    <ListSelect
+                        name="unit"
                         endpoint="units"
                         value={substance.unit}
                         label="Jednotka"

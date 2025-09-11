@@ -4,6 +4,20 @@ function SubstancePage() {
     const [substances, setSubstances] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    const columnWidths = [
+        '200px', // Název
+        '120px', // Látka/Směs
+        '140px', // Fyzikální forma
+        '80px',  // IPLP
+        '100px', // Dezinfekce
+        '140px', // Vlastnosti
+        '150px', // Bezpečnostní list
+        '160px', // Max. sklad. v tunách
+        '160px', // Kategorie nebezpečnosti
+        '100px', // EC50
+        '80px',  // Jednotka
+    ];
+
     useEffect(() => {
         fetchPropertyList().catch(console.error);
     }, []);
@@ -66,31 +80,31 @@ function SubstancePage() {
             ) : substances.length === 0 ? (
                 <div className="alert alert-warning text-center">Žádná data k zobrazení.</div>
             ) : (
-                <div className="d-flex flex-column">
+                <div className="d-flex flex-column" style={{ overflowX: 'auto' }}>
                     <div className="d-flex bg-dark text-white fw-bold border-bottom">
-                        <div className="p-2 flex-fill">Název</div>
-                        <div className="p-2 flex-fill text-center">Látka/Směs</div>
-                        <div className="p-2 flex-fill text-center">Fyzikální forma</div>
-                        <div className="p-2 flex-fill text-center">IPLP</div>
-                        <div className="p-2 flex-fill text-center">Dezinfekce</div>
-                        <div className="p-2 flex-fill text-center">Vlastnosti</div>
-                        <div className="p-2 flex-fill text-center">Bezpečnostní list</div>
-                        <div className="p-2 flex-fill text-center">Max. sklad. v tunách</div>
-                        <div className="p-2 flex-fill text-center">Kategorie nebezpečnosti</div>
-                        <div className="p-2 flex-fill text-center">EC50</div>
-                        <div className="p-2 flex-fill text-center">Jednotka</div>
+                        <div className="p-2" style={{ flex: '0 0 ' + columnWidths[0] }}>Název</div>
+                        <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[1] }}>Látka/Směs</div>
+                        <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[2] }}>Fyzikální forma</div>
+                        <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[3] }}>IPLP</div>
+                        <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[4] }}>Dezinfekce</div>
+                        <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[5] }}>Vlastnosti</div>
+                        <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[6] }}>Bezpečnostní list</div>
+                        <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[7] }}>Max. sklad. v tunách</div>
+                        <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[8] }}>Kategorie nebezpečnosti</div>
+                        <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[9] }}>EC50</div>
+                        <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[10] }}>Jednotka</div>
                     </div>
                     {substances.map((substance, sIndex) => (
                         <div
                             key={substance._id.$oid || sIndex}
                             className={`d-flex align-items-center border-bottom ${sIndex % 2 ? "bg-light" : ""}`}
                         >
-                            <div className="p-2 flex-fill fw-bold">{substance.name}</div>
-                            <div className="p-2 flex-fill text-center">{substance.substance_mixture}</div>
-                            <div className="p-2 flex-fill text-center">{substance.physical_form}</div>
-                            <div className="p-2 flex-fill text-center">{substance.iplp ? "ano" : "ne"}</div>
-                            <div className="p-2 flex-fill text-center">{substance.disinfection ? "ano" : "ne"}</div>
-                            <div className="p-2 flex-fill text-center">
+                            <div className="p-2 fw-bold" style={{ flex: '0 0 ' + columnWidths[0] }}>{substance.name}</div>
+                            <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[1] }}>{substance.substance_mixture}</div>
+                            <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[2] }}>{substance.physical_form}</div>
+                            <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[3] }}>{substance.iplp ? "ano" : "ne"}</div>
+                            <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[4] }}>{substance.disinfection ? "ano" : "ne"}</div>
+                            <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[5] }}>
                                 <div className="btn-group">
                                     <button
                                         type="button"
@@ -111,7 +125,7 @@ function SubstancePage() {
                                     </ul>
                                 </div>
                             </div>
-                            <div className="p-2 flex-fill text-center">
+                            <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[6] }}>
                                 {substance.safety_sheet ? (
                                     <a
                                         href={`http://localhost:8000/safety_sheet/${substance._id.$oid}`}
@@ -146,10 +160,10 @@ function SubstancePage() {
                                     </label>
                                 )}
                             </div>
-                            <div className="p-2 flex-fill text-center">{substance.max_tons}</div>
-                            <div className="p-2 flex-fill text-center">{substance.danger_category}</div>
-                            <div className="p-2 flex-fill text-center">{substance.water_toxicity_EC50}</div>
-                            <div className="p-2 flex-fill text-center">{substance.unit}</div>
+                            <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[7] }}>{substance.max_tons}</div>
+                            <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[8] }}>{substance.danger_category}</div>
+                            <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[9] }}>{substance.water_toxicity_EC50}</div>
+                            <div className="p-2 text-center" style={{ flex: '0 0 ' + columnWidths[10] }}>{substance.unit}</div>
                         </div>
                     ))}
                 </div>

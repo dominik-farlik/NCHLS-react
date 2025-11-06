@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function RecordPage() {
+function Records() {
     const [records, setRecords] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -56,4 +56,4 @@ function RecordPage() {
     );
 }
 
-export default RecordPage;
+export default Records;

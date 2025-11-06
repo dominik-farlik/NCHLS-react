@@ -1,25 +1,23 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./Navbar.jsx";
 import RecordForm from "./RecordForm.jsx";
-import SubstanceForm from "./SubstanceForm.jsx";
+import AddSubstance from "./AddSubstance.jsx";
 import Home from "./Home.jsx";
-import SubstancePage from "./SubstancePage.jsx";
-import RecordPage from "./RecordPage.jsx";
+import Substances from "./Substances.jsx";
+import Records from "./Records.jsx";
 
 
 function App() {
     return (
         <Router>
             <Navbar />
-            <div className="container mt-3">
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/add-substance" element={<SubstanceForm />} />
+                    <Route path="/add-substance" element={<AddSubstance />} />
                     <Route path="/add-record" element={<RecordForm />} />
-                    <Route path="/substances" element={<SubstancePage />} />
-                    <Route path="/records" element={<RecordPage />} />
+                    <Route path="/substances" element={<Substances />} />
+                    <Route path="/records" element={<Records />} />
                 </Routes>
-            </div>
         </Router>
     );
 }

@@ -9,7 +9,7 @@ import json
 import os
 
 from models import Record, Substance
-from db import insert_record, insert_substance, add_safety_sheet, fetch_substances, fetch_substances_names
+from db import insert_record, insert_substance, add_safety_sheet, fetch_substances, fetch_substances_names, import_substances
 from property_lists import UNITS, PROPERTIES, PHYSICAL_FORMS
 
 app = FastAPI()
@@ -110,3 +110,7 @@ async def get_safety_sheet(substance_id: str):
         media_type="application/pdf",
         headers=headers
     )
+
+@app.get("/import_substances")
+def import_substances_to_db():
+    return import_substances()

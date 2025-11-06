@@ -3,7 +3,7 @@ import SelectPropertyAttribute from "./SelectPropertyAttribute.jsx";
 import ListSelect from "./ListSelect.jsx";
 import ImageUploadPreview from "./ImageUploadPreview.jsx";
 
-function SubstanceForm() {
+function AddSubstance() {
     const [substance, setSubstance] = useState({
         name: '',
         unit: '',
@@ -308,4 +308,4 @@ function SubstanceForm() {
     );
 }
 
-export default SubstanceForm;
+export default AddSubstance;

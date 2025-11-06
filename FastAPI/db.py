@@ -1,9 +1,10 @@
 from bson import ObjectId
 from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
-from pymongo import MongoClient
+from pymongo import MongoClient, InsertOne
 import os
 import logging
+import json
 
 from pymongo.errors import DuplicateKeyError
 
@@ -14,7 +15,6 @@ MONGO_PASSWORD = os.getenv("MONGO_PASSWORD", "secret")
 MONGO_HOST = os.getenv("MONGO_HOST", "mongodb")
 MONGO_PORT = os.getenv("MONGO_PORT", "27017")
 
-# Create MongoDB client and choose a database
 client = MongoClient(f"mongodb://{MONGO_USER}:{MONGO_PASSWORD}@{MONGO_HOST}:{MONGO_PORT}")
 db = client.nchls
 
@@ -63,3 +63,16 @@ def fetch_substances():
 def fetch_substances_names():
     """Fetch substance names as a list."""
     return [doc["name"] for doc in db.substances.find({}, {"name": 1, "_id": 0})]
+
+
+def import_substances() -> None:
+    # Open and parse the entire JSON array
+    with open("csvjson.json", encoding="utf-8") as f:
+        data = json.load(f)
+
+    # Prepare bulk insert operations
+    requesting = [InsertOne(item) for item in data]
+
+    # Insert all records at once
+    result = db.substances.bulk_write(requesting)
+    client.close()

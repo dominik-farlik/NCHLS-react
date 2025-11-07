@@ -1,6 +1,6 @@
 UNITS = ["g", "kg", "ml", "l", "ks"]
 
-PHYSICAL_FORMS = ["Pevná", "Plynná", "Kapalná"]
+PHYSICAL_FORMS = ["pevná", "plynná", "kapalná"]
 
 PROPERTIES = {
     # HEALTH PROPERTIES

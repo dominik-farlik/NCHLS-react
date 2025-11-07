@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
+import axios from "axios";
 
-function RecordForm() {
+function AddRecord() {
     const [record, setRecord] = useState({
         substance_id: '',
         amount: 0,
@@ -12,18 +13,10 @@ function RecordForm() {
     const [selectedUnit, setSelectedUnit] = useState('');
 
     useEffect(() => {
-        async function fetchsubstanceList() {
-            try {
-                const response = await fetch('http://localhost:8000/substances');
-                if (!response.ok) throw new Error('Chyba při načítání vlastností');
-                const data = await response.json();
-                setsubstanceList(data);
-            } catch (error) {
-                console.error(error);
-                setsubstanceList([]);
-            }
-        }
-        fetchsubstanceList().catch(console.error);
+        axios.get("/api/substances")
+            .then(res => {
+                setsubstanceList(res.data);
+            })
     }, []);
 
     const handleChange = (e) => {
@@ -43,7 +36,7 @@ function RecordForm() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const response = await fetch('http://localhost:8000/add_record', {
+        const response = await fetch('/api/add_record', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -136,4 +129,4 @@ function RecordForm() {
     );
 }
 
-export default RecordForm;
+export default AddRecord;

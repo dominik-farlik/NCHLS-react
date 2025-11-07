@@ -1,9 +1,8 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
-function ListSelect({ endpoint, label, onChange, value, name }) {
-    const [internalValue, setInternalValue] = useState(value || "");
+function SelectPropertyAttribute({ endpoint, value, onChange }) {
     const [options, setOptions] = useState([]);
-    const [loadingOptions, setLoadingOptions] = useState(true);
+    const [internalValue, setInternalValue] = useState(value || "");
 
     useEffect(() => {
         if (!endpoint) {
@@ -14,52 +13,51 @@ function ListSelect({ endpoint, label, onChange, value, name }) {
         }
 
         async function fetchOptions() {
-            setLoadingOptions(true);
             try {
-                const response = await fetch(`http://localhost:8000/${endpoint}`);
+                const response = await fetch(`/api/${endpoint}`);
                 if (!response.ok) throw new Error("Chyba při načítání");
                 const data = await response.json();
                 setOptions(data);
+                if (data.length > 0) {
+                    setInternalValue(data[0]);
+                    if (onChange) onChange(data[0]);
+                }
             } catch (error) {
                 console.error(error);
                 setOptions([]);
-            } finally {
-                setLoadingOptions(false);
             }
         }
 
         fetchOptions();
     }, [endpoint]);
 
+    useEffect(() => {
+        setInternalValue(value || "");
+    }, [value]);
+
     const handleChange = (e) => {
         setInternalValue(e.target.value);
-        if (onChange) onChange(e);
+        if (onChange) onChange(e.target.value);
     };
 
-    return(
+    return (
         <div>
-            <label className="form-label fw-bold">{label}</label>
-            {loadingOptions ? (
-                <div className="form-text">Načítám data...</div>
-            ) : (
                 <select
-                    name={name}
+                    name="option"
                     value={internalValue}
                     onChange={handleChange}
                     className="form-select"
+                    required
+                    disabled={options.length === 0}
                 >
-                    <option value="" disabled>
-                        -- Vyber --
-                    </option>
                     {options.map((option) => (
                         <option key={option} value={option}>
                             {option}
                         </option>
                     ))}
                 </select>
-            )}
         </div>
     );
 }
 
-export default ListSelect;
+export default SelectPropertyAttribute;

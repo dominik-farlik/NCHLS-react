@@ -1,10 +1,11 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./Navbar.jsx";
-import RecordForm from "./RecordForm.jsx";
-import AddSubstance from "./AddSubstance.jsx";
-import Home from "./Home.jsx";
-import Substances from "./Substances.jsx";
-import Records from "./Records.jsx";
+import Navbar from "./components/Navbar.jsx";
+import AddRecord from "./pages/AddRecord.jsx";
+import AddSubstance from "./pages/AddSubstance.jsx";
+import Home from "./pages/Home.jsx";
+import Substances from "./pages/Substances.jsx";
+import Records from "./pages/Records.jsx";
+import EditSubstance from "./pages/EditSubstance.jsx";
 
 
 function App() {
@@ -14,7 +15,8 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/add-substance" element={<AddSubstance />} />
-                    <Route path="/add-record" element={<RecordForm />} />
+                    <Route path="/edit-substance/:substance_id" element={<EditSubstance />} />
+                    <Route path="/add-record" element={<AddRecord />} />
                     <Route path="/substances" element={<Substances />} />
                     <Route path="/records" element={<Records />} />
                 </Routes>

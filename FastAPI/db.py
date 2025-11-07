@@ -65,14 +65,9 @@ def fetch_substances_names():
     return [doc["name"] for doc in db.substances.find({}, {"name": 1, "_id": 0})]
 
 
-def import_substances() -> None:
-    # Open and parse the entire JSON array
-    with open("csvjson.json", encoding="utf-8") as f:
-        data = json.load(f)
+def get_db():
+    return db
 
-    # Prepare bulk insert operations
-    requesting = [InsertOne(item) for item in data]
-
-    # Insert all records at once
-    result = db.substances.bulk_write(requesting)
-    client.close()
+def fetch_records():
+    """Fetch all substances from the collection."""
+    return db.records.find({})

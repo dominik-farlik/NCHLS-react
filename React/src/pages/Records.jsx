@@ -1,36 +1,19 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 function Records() {
     const [records, setRecords] = useState([]);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchRecords().catch(console.error);
+        axios.get("/api/records")
+            .then(res => {
+                setRecords(res.data);
+            })
     }, []);
-
-    const fetchRecords = async () => {
-        try {
-            const response = await fetch('http://localhost:8000/records');
-            if (!response.ok) throw new Error('Chyba při načítání');
-            const data = await response.json();
-            setRecords(data);
-        } catch (error) {
-            console.error(error);
-            setRecords([]);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <div className="container mt-4">
-            {loading ? (
-                <div className="d-flex justify-content-center align-items-center" style={{ height: '200px' }}>
-                    <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">Načítám...</span>
-                    </div>
-                </div>
-            ) : records.length === 0 ? (
+            {records.length === 0 ? (
                 <div className="alert alert-warning text-center">Žádné záznamy k zobrazení.</div>
             ) : (
                 <table className="table table-hover align-middle table-striped table-borderless">

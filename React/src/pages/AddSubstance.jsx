@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import SelectPropertyAttribute from "./SelectPropertyAttribute.jsx";
-import ListSelect from "./ListSelect.jsx";
-import ImageUploadPreview from "./ImageUploadPreview.jsx";
+import SelectPropertyAttribute from "../components/SelectPropertyAttribute.jsx";
+import ListSelect from "../components/ListSelect.jsx";
+import ImageUploadPreview from "../components/ImageUploadPreview.jsx";
+import axios from "axios";
 
 function AddSubstance() {
     const [substance, setSubstance] = useState({
@@ -14,24 +15,15 @@ function AddSubstance() {
         properties: [{ name: '', category: '', exposure_route: ''}],
         safety_sheet: undefined,
     });
-
     const [propertyList, setPropertyList] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
     useEffect(() => {
-        async function fetchPropertyList() {
-            try {
-                const response = await fetch('http://localhost:8000/properties');
-                if (!response.ok) throw new Error('Chyba při načítání vlastností');
-                const data = await response.json();
-                setPropertyList(data);
-            } catch (error) {
-                console.error(error);
-                setPropertyList([]);
-            }
-        }
-        fetchPropertyList().catch(console.error);
+        axios.get("/api/properties")
+            .then(res => {
+                setPropertyList(res.data);
+            })
     }, []);
 
     const handleChange = (e) => {
@@ -161,8 +153,8 @@ function AddSubstance() {
                             className="form-select"
                         >
                             <option value="" disabled>-- Vyber --</option>
-                            <option value="Látka">Látka</option>
-                            <option value="Směs">Směs</option>
+                            <option value="látka">látka</option>
+                            <option value="směs">směs</option>
                         </select>
                     </div>
                     <div className="col-md-2">
@@ -174,11 +166,11 @@ function AddSubstance() {
                             className="form-select"
                         >
                             <option value="" disabled>-- Vyber formu --</option>
-                            <option value="Pevná">Pevná</option>
-                            <option value="Kapalná">Kapalná</option>
-                            <option value="Plynná">Plynná</option>
-                            <option value="Prášek">Prášek</option>
-                            <option value="Prášek">Aerosol</option>
+                            <option value="pevná_látka">pevná látka</option>
+                            <option value="kapalina">kapalina</option>
+                            <option value="plyn">plyn</option>
+                            <option value="prášek">prášek</option>
+                            <option value="aerosol">aerosol</option>
                         </select>
                     </div>
                     <div className="col-md-2">

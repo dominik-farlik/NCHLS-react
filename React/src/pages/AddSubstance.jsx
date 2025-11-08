@@ -3,6 +3,7 @@ import SelectPropertyAttribute from "../components/SelectPropertyAttribute.jsx";
 import ListSelect from "../components/ListSelect.jsx";
 import ImageUploadPreview from "../components/ImageUploadPreview.jsx";
 import axios from "axios";
+import Alert from "../components/Alert.jsx";
 
 function AddSubstance() {
     const [substance, setSubstance] = useState({
@@ -16,6 +17,10 @@ function AddSubstance() {
         safety_sheet: undefined,
     });
     const [propertyList, setPropertyList] = useState([]);
+    const [alert, setAlert] = useState({
+        message: "",
+        type: ""
+    });
 
     useEffect(() => {
         axios.get("/api/properties")
@@ -72,16 +77,16 @@ function AddSubstance() {
         await axios.post("/api/substances", substance)
         .then(response => {
             console.log(response);
-            return <AddSubstance />;
+            setAlert({message: "Látka byla přidána", type: "success"});
         })
         .catch(error => {
-            console.log(error);
+            setAlert({message: error.response.data.detail, type: "danger"});
         })
     };
 
     return (
         <div className="container mt-4">
-            <p>alert</p>
+            <Alert message={alert.message} type={alert.type}/>
             <div className="card shadow-sm">
                 <div className="card-body">
                     <h2 className="mb-4">Přidat látku</h2>

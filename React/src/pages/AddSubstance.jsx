@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import SelectPropertyAttribute from "../components/SelectPropertyAttribute.jsx";
 import ListSelect from "../components/ListSelect.jsx";
-import ImageUploadPreview from "../components/ImageUploadPreview.jsx";
 import axios from "axios";
 import Alert from "../components/Alert.jsx";
 
@@ -176,10 +175,6 @@ function AddSubstance() {
                     </div>
                 </div>
                 <div className="row mb-3">
-                    <div className="col-md-4">
-                        <ImageUploadPreview/>
-                    </div>
-                    <div className="col-md-4"></div>
                     <div className="col-md-4">
                         <label className="form-label fw-bold">Bezpečnostní list</label>
                         <input

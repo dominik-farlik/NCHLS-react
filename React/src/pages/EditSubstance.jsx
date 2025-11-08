@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 import SelectPropertyAttribute from "../components/SelectPropertyAttribute.jsx";
-import ImageUploadPreview from "../components/ImageUploadPreview.jsx";
-import Substances from "./Substances.jsx";
 
 function EditSubstance() {
     const { substance_id } = useParams();
@@ -195,10 +193,6 @@ function EditSubstance() {
                         </div>
 
                         <div className="row mb-3">
-                            <div className="col-md-4">
-                                <ImageUploadPreview />
-                            </div>
-                            <div className="col-md-4"></div>
                             <div className="col-md-4">
                                 <label className="form-label fw-bold">Bezpečnostní list</label>
                                 <input

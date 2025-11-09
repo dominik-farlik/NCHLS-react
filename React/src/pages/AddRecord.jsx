@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import axios from "axios";
+import Alert from "../components/Alert.jsx";
 
 function AddRecord() {
     const [record, setRecord] = useState({
-        substance_name: '',
+        substance_id: '',
         amount: 0,
         location_name: '',
         year: new Date().getFullYear(),
@@ -11,7 +12,11 @@ function AddRecord() {
 
     const [substanceList, setSubstanceList] = useState([]);
     const [departmentList, setDepartmentList] = useState([]);
-    const [unit, setUnit] = useState('');
+    const [alert, setAlert] = useState({
+        message: "",
+        type: ""
+    });
+    const [substanceName, setSubstanceName] = useState("");
 
     useEffect(() => {
         axios.get("/api/substances")
@@ -24,41 +29,46 @@ function AddRecord() {
             })
     }, []);
 
+    useEffect(() => {
+        const selected = substanceList.find(s => s.name === substanceName);
+        if (selected) {
+            setRecord(prev => ({
+                ...prev,
+                substance_id: selected._id.$oid
+            }));
+        }
+    }, [substanceName, substanceList]);
+
+
+    const unit = useMemo(() => {
+        const s = substanceList.find(x => x.name === substanceName);
+        return s?.unit ?? "ks";
+    }, [substanceName, substanceList]);
+
+
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        if (name === "substance_name") {
-            const selected = substanceList.find(substance => substance.name === value);
-            if (selected?.unit) {
-                setUnit(selected.unit);
-            } else {
-                setUnit("ks");
-            }
-        }
         setRecord((prev) => ({
             ...prev,
             [name]: value,
         }));
     };
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        const response = await fetch('/api/add_record', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(record),
-        });
-
-        const data = await response.json();
-        console.log('Response:', data);
+        await axios.post("/api/records", record)
+            .then(() => {
+                setAlert({message: "Záznam byl přidán", type: "success"});
+            })
+            .catch(error => {
+                setAlert({message: error.response.data.detail, type: "danger"});
+            })
     };
 
     return (
         <div className="container mt-4">
+            <Alert message={alert.message} type={alert.type}/>
             <div className="card shadow-sm">
                 <div className="card-body">
                     <h2 className="mb-4">Přidat záznam</h2>
@@ -101,8 +111,8 @@ function AddRecord() {
                                 <input
                                     type="text"
                                     name="substance_name"
-                                    value={record.substance_name}
-                                    onChange={handleChange}
+                                    value={substanceName}
+                                    onChange={(e) => setSubstanceName(e.target.value)}
                                     className="form-control"
                                     list="datalistOptions"
                                     required

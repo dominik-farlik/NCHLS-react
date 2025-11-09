@@ -20,6 +20,7 @@ function App() {
                     <Route path="/add-record" element={<AddRecord />} />
                     <Route path="/substances" element={<Substances />} />
                     <Route path="/records" element={<Records />} />
+                    <Route path="/records/:departmentName" element={<Records />} />
                     <Route path="/departments" element={<Departments />} />
                 </Routes>
         </Router>

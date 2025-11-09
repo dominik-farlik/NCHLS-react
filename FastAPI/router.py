@@ -1,6 +1,6 @@
 from pathlib import Path
 from bson import ObjectId
-from fastapi import FastAPI, Body, UploadFile, File, HTTPException, APIRouter
+from fastapi import FastAPI, Body, UploadFile, File, HTTPException, APIRouter, Query
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse, FileResponse
 import shutil
@@ -109,46 +109,17 @@ async def add_substance(substance: Substance = Body(...)):
 async def update_substance(substance: Substance = Body(...)):
     db_update_substance(substance)
 
-
-# --------------------------
-# Files
-# --------------------------
-@api.post("/{substance_id}/add_safety_sheet")
-async def save_safety_sheet(substance_id: str, safety_sheet: UploadFile = File(...)):
-    try:
-        extension = Path(safety_sheet.filename).suffix or ".pdf"
-        file_path = UPLOAD_DIR / f"{substance_id}{extension}"
-        with file_path.open("wb") as buffer:
-            shutil.copyfileobj(safety_sheet.file, buffer)
-        logger.info(f"Adding safety_sheet for {substance_id}")
-        add_safety_sheet(substance_id)
-        return JSONResponse(content={"message": "Safety sheet uploaded successfully", "file_path": str(file_path)})
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to upload file: {e}")
-
-
-@api.get("/safety_sheet/{substance_id}")
-async def get_safety_sheet(substance_id: str):
-    pdf_path = os.path.join(UPLOAD_DIR, f"{substance_id}.pdf")
-    if not os.path.exists(pdf_path):
-        raise HTTPException(status_code=404, detail=f"Soubor {pdf_path} nenalezen")
-    return FileResponse(
-        path=pdf_path,
-        media_type="application/pdf",
-        headers={"Content-Disposition": f'inline; filename="{substance_id}.pdf"'}
-    )
-
-
 # --------------------------
 # Records
 # --------------------------
 @api.get("/records")
-async def list_records():
-    cursor = fetch_records()
-    return JSONResponse(content=json.loads(dumps(cursor)))
+async def list_records(department_name: str | None = Query(default=None)):
+    filter_ = {"location_name": department_name}
+    cursor = fetch_records(filter_)
+    return json.loads(dumps(list(cursor)))
 
 
-@api.post("/add_record")
+@api.post("/records")
 async def add_record(record: Record = Body(...)):
     logger.info(f"Adding record {record}")
     inserted_id = insert_record(record.model_dump())

@@ -83,8 +83,7 @@ function AddSubstance() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         await axios.post("/api/substances", substance)
-        .then(response => {
-            console.log(response);
+        .then(() => {
             setAlert({message: "Látka byla přidána", type: "success"});
         })
         .catch(error => {

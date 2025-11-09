@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import {useParams} from "react-router-dom";
 
 function Records() {
     const [records, setRecords] = useState([]);
+    const { departmentName } = useParams();
 
     useEffect(() => {
-        axios.get("/api/records")
-            .then(res => {
-                setRecords(res.data);
+        axios.get("/api/records", { params: { department_name: departmentName } })
+            .then(response => {
+                setRecords(response.data);
             })
-    }, []);
+    }, [departmentName]);
 
     return (
         <div className="container mt-4">
@@ -33,7 +35,8 @@ function Records() {
                         <tr key={record._id?.$oid}>
                             <td>{record.year}</td>
                             <td>{record.location_name}</td>
-                            <td>{record.substance_id}</td>
+                            <td>{record.substance.name}</td>
+                            <td>{record.amount} {record.substance.unit || "ks"}</td>
                         </tr>
                     ))}
                     </tbody>

@@ -29,6 +29,7 @@ def insert_substance(substance: dict):
 
 def insert_record(record: dict):
     """Insert a record into the collection and return inserted ID."""
+    record["substance_id"] = ObjectId(record["substance_id"])
     result = db.records.insert_one(record)
     return result.inserted_id
 
@@ -59,9 +60,27 @@ def fetch_substance(substance_id: str):
     return db.substances.find_one({"_id": ObjectId(substance_id)})
 
 
-def fetch_records():
-    """Fetch all substances from the collection."""
-    return db.records.find({})
+def fetch_records(filter_: dict = {}):
+    """Fetch all records from the collection."""
+    return db.records.aggregate([
+        {"$match": filter_},
+        {"$addFields": {
+            "substance_oid": {
+                "$cond": [
+                    {"$eq": [{"$type": "$substance_id"}, "objectId"]},
+                    "$substance_id",
+                    {"$toObjectId": "$substance_id"}
+                ]
+            }
+        }},
+        {"$lookup": {
+            "from": "substances",
+            "localField": "substance_oid",
+            "foreignField": "_id",
+            "as": "substance"
+        }},
+        {"$unwind": {"path": "$substance", "preserveNullAndEmptyArrays": True}},
+    ])
 
 
 def fetch_departments():

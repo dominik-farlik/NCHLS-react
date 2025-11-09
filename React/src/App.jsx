@@ -6,6 +6,7 @@ import Home from "./pages/Home.jsx";
 import Substances from "./pages/Substances.jsx";
 import Records from "./pages/Records.jsx";
 import EditSubstance from "./pages/EditSubstance.jsx";
+import Departments from "./pages/Departments.jsx";
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
                     <Route path="/add-record" element={<AddRecord />} />
                     <Route path="/substances" element={<Substances />} />
                     <Route path="/records" element={<Records />} />
+                    <Route path="/departments" element={<Departments />} />
                 </Routes>
         </Router>
     );

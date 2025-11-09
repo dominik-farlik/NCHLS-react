@@ -57,7 +57,7 @@ function Navbar() {
                                 }
                                 to="/substances"
                             >
-                                Seznam látek
+                                Látky
                             </NavLink>
                         </li>
                         <li className="nav-item">
@@ -67,7 +67,17 @@ function Navbar() {
                                 }
                                 to="/records"
                             >
-                                Seznam záznamů
+                                Záznamy
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink
+                                className={({ isActive }) =>
+                                    "nav-link" + (isActive ? " active" : "")
+                                }
+                                to="/departments"
+                            >
+                                Oddělení
                             </NavLink>
                         </li>
                     </ul>

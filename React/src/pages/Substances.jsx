@@ -34,7 +34,7 @@ function Substances() {
                 onChange={e => setSearch(e.target.value)}
                 className="form-control mb-4 w-25"
             />
-            <div className="table-responsive" style={{ maxHeight: "86vh", overflowY: "auto" }}>
+            <div className="table-responsive" style={{ maxHeight: "79vh", overflowY: "auto" }}>
                 <table className="table table-hover align-middle table-bordered" style={{ position: "relative" }}>
                     <thead
                         className="table-light"

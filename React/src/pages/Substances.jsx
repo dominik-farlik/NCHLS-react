@@ -26,8 +26,8 @@ function Substances() {
     const asYesNo = (v) => (v ? "ano" : "ne");
 
     return (
-        <div className="mt-4">
-            <div className="d-flex justify-content-between align-items-center px-4 mb-3">
+        <div className="mt-4 px-5">
+            <div className="d-flex justify-content-between align-items-center mb-3">
                 <input
                     type="text"
                     placeholder="Hledej látku..."
@@ -43,7 +43,7 @@ function Substances() {
                     Přidat
                 </Link>
             </div>
-            <div className="table-responsive" style={{ maxHeight: "79vh", overflowY: "auto" }}>
+            <div className="table-responsive border-top border-2 border-light" style={{ maxHeight: "79vh", overflowY: "auto" }}>
                 <table className="table table-hover align-middle table-bordered" style={{ position: "relative" }}>
                     <thead
                         className="table-light"
@@ -52,14 +52,14 @@ function Substances() {
                             top: 0,
                         }}
                     >
-                    <tr className="border" style={{ position: "sticky", top: "0" }}>
+                    <tr style={{ position: "sticky", top: "0" }}>
                         <th>Název</th>
                         <th>Látka/Směs</th>
                         <th>Fyzikální forma</th>
                         <th>IPLP</th>
                         <th>Dezinfekce</th>
                         <th>Vlastnosti</th>
-                        <th>Bezpečnostní list</th>
+                        <th title="Bezpečnostní list">BL</th>
                         <th>Max. sklad. v tunách</th>
                         <th>Kategorie nebezpečnosti</th>
                         <th>EC50</th>
@@ -69,23 +69,58 @@ function Substances() {
                     <tbody>
                     {filtered.map((substance) => {
                         return (
-                            <tr key={substance._id.$oid} onClick={() => navigate(`/edit-substance/${substance._id.$oid}`)} style={{ cursor: "pointer" }}>
-                                <td style={{ fontWeight: "700" }}>{substance.name}</td>
+                            <tr
+                                key={substance._id.$oid}
+                                onClick={() => navigate(`/edit-substance/${substance._id.$oid}`)}
+
+                                style={{ cursor: "pointer" }}
+                            >
+                                <td
+                                    className="text-truncate"
+                                    style={{ maxWidth: "320px", fontWeight: "700" }}
+                                    title={substance.danger_category}
+                                >
+                                    {substance.name}
+                                </td>
                                 <td>{substance.substance_mixture ?? ""}</td>
                                 <td>{substance.physical_form ?? ""}</td>
                                 <td>{asYesNo(substance.iplp)}</td>
                                 <td>{asYesNo(substance.disinfection)}</td>
-                                <td>{substance.properties.map((property, index) => (
-                                    <div key={index}>{property.name} {property.category} {property.exposure_route}</div>))}
+                                <td>
+                                    {substance.properties.map((property, index) => (
+                                    <div key={index}>
+                                        {property.name}
+                                        {property.category}
+                                        {property.exposure_route}
+                                    </div>
+                                ))}
                                 </td>
                                 <td>{asYesNo(substance.safety_sheet)}</td>
-                                <td>{substance.max_tons ?? ""}</td>
-                                <td>{substance.danger_category ?? ""}</td>
-                                <td style={{ textOverflow: "ellipsis", whiteSpace: "nowrap", overflow: "hidden", maxWidth: "120px" }}
-                                    title={substance.water_toxicity_EC50}>
+                                <td
+                                    className="text-truncate"
+                                    style={{ maxWidth: "50px" }}
+                                    title={substance.max_tons}
+                                >
+                                    {substance.max_tons ?? ""}
+                                </td>
+                                <td
+                                    className="text-truncate"
+                                    style={{ maxWidth: "60px" }}
+                                    title={substance.danger_category}
+                                >
+                                    {substance.danger_category ?? ""}
+                                </td>
+                                <td className="text-truncate"
+                                    style={{ maxWidth: "80px" }}
+                                    title={substance.water_toxicity_EC50}
+                                >
                                     {substance.water_toxicity_EC50 ?? ""}
                                 </td>
-                                <td>{substance.unit ?? ""}</td>
+                                <td
+                                    className="text-truncate"
+                                    style={{ maxWidth: "60px" }}
+                                    title={substance.unit}
+                                >{substance.unit ?? ""}</td>
                             </tr>
                         );
                     })}

@@ -15,7 +15,7 @@ function Records() {
 
     return (
         <div className="container mt-4">
-            <div className="d-flex justify-content-between align-items-center px-4 mb-3">
+            <div className="d-flex justify-content-between align-items-center mb-3">
                 <input
                     type="text"
                     placeholder="Hledej látku..."

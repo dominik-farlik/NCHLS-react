@@ -25,16 +25,6 @@ function Navbar() {
                                 className={({ isActive }) =>
                                     "nav-link" + (isActive ? " active" : "")
                                 }
-                                to="/"
-                            >
-                                Home
-                            </NavLink>
-                        </li>
-                        <li className="nav-item">
-                            <NavLink
-                                className={({ isActive }) =>
-                                    "nav-link" + (isActive ? " active" : "")
-                                }
                                 to="/substances"
                             >
                                 Látky

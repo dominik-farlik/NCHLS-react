@@ -24,7 +24,7 @@ function Departments() {
                             className="list-group-item list-group-item-action"
                             to={`/records/${department.name}`}
                         >
-                            {department.name}
+                            {department.id}. {department.name}
                         </NavLink>
                     </li>
                 ))}

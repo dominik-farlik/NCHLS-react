@@ -5,7 +5,7 @@ import Alert from "../components/Alert.jsx";
 function AddRecord() {
     const [record, setRecord] = useState({
         substance_id: '',
-        amount: 0,
+        amount: '',
         location_name: '',
         year: new Date().getFullYear(),
     });
@@ -127,8 +127,9 @@ function AddRecord() {
                                 <label className="form-label fw-bold">Množství</label>
                                 <input
                                     type="number"
-                                    step="any"
+                                    step="0.1"
                                     name="amount"
+                                    placeholder="0"
                                     value={record.amount}
                                     onChange={handleChange}
                                     className="form-control"
@@ -144,7 +145,7 @@ function AddRecord() {
                                 />
                             </div>}
                         </div>
-                        <button type="submit" className="btn btn-primary w-100">Odeslat</button>
+                        <button type="submit" className="btn btn-primary w-100">Uložit</button>
                     </form>
                 </div>
             </div>

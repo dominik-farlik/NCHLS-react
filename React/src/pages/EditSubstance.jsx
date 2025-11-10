@@ -33,11 +33,12 @@ function EditSubstance() {
                 const data = res.data;
                 setSubstance({
                     ...data,
-                    properties: data.properties && data.properties.length > 0
-                        ? data.properties
-                        : [{ name: '', category: '', exposure_route: '' }]
+                    properties: [
+                        ...(data.properties ?? []),
+                        { name: '', category: '', exposure_route: '' }
+                    ]
                 });
-            })
+            });
     }, [substance_id]);
 
     useEffect(() => {
@@ -96,8 +97,7 @@ function EditSubstance() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         await axios.put("/api/substances", substance)
-            .then(response => {
-                console.log(response);
+            .then(() => {
                 navigate("/substances");
             })
             .catch(error => {

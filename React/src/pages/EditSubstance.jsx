@@ -62,11 +62,6 @@ function EditSubstance() {
         setSubstance((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleCheckbox = (e) => {
-        const { name, checked } = e.target;
-        setSubstance((prev) => ({ ...prev, [name]: checked }));
-    };
-
     const handlePropertyChange = (index, field, value) => {
         const current = substance.properties;
         const newProperties = [...current];
@@ -126,7 +121,6 @@ function EditSubstance() {
                                     required
                                 />
                             </div>
-
                             <div className="col-md-2">
                                 <label className="form-label fw-bold">Látka/Směs</label>
                                 <select
@@ -135,12 +129,11 @@ function EditSubstance() {
                                     onChange={handleChange}
                                     className="form-select"
                                 >
-                                    <option value="" disabled>-- Vyber --</option>
+                                    <option value="" disabled />
                                     <option value="látka">látka</option>
                                     <option value="směs">směs</option>
                                 </select>
                             </div>
-
                             <div className="col-md-2">
                                 <label className="form-label fw-bold">Fyzikální forma</label>
                                 <select
@@ -149,7 +142,7 @@ function EditSubstance() {
                                     onChange={handleChange}
                                     className="form-select"
                                 >
-                                    <option value="" disabled/>
+                                    <option value="" disabled />
                                     {physicalFormList.map((option) => (
                                         <option key={option} value={option}>
                                             {option}
@@ -157,7 +150,6 @@ function EditSubstance() {
                                     ))}
                                 </select>
                             </div>
-
                             <div className="col-md-2">
                                 <label className="form-label fw-bold">Jednotka</label>
                                 <select
@@ -166,9 +158,7 @@ function EditSubstance() {
                                     onChange={handleChange}
                                     className="form-select"
                                 >
-                                    <option value="" disabled>
-                                        -- Vyber --
-                                    </option>
+                                    <option value="" disabled />
                                     {unitList.map((option) => (
                                         <option key={option} value={option}>
                                             {option}
@@ -176,32 +166,39 @@ function EditSubstance() {
                                     ))}
                                 </select>
                             </div>
-
                             <div className="col-md-2">
                                 <div className="form-check">
                                     <input
                                         type="checkbox"
                                         name="iplp"
-                                        checked={!!substance.iplp}
-                                        onChange={handleCheckbox}
+                                        checked={substance.iplp}
+                                        onChange={(e) =>
+                                            setSubstance({
+                                                ...substance,
+                                                iplp: e.target.checked,
+                                            })
+                                        }
                                         className="form-check-input"
                                     />
                                     <label className="form-check-label fw-bold">IPLP</label>
                                 </div>
-
                                 <div className="form-check">
                                     <input
                                         type="checkbox"
                                         name="disinfection"
-                                        checked={!!substance.disinfection}
-                                        onChange={handleCheckbox}
+                                        checked={substance.disinfection}
+                                        onChange={(e) =>
+                                            setSubstance({
+                                                ...substance,
+                                                disinfection: e.target.checked,
+                                            })
+                                        }
                                         className="form-check-input"
                                     />
-                                    <label className="form-check-label fw-bold">Dezinfekce</label>
+                                    <label className="form-check-label fw-bold">Desinfekce</label>
                                 </div>
                             </div>
                         </div>
-
                         <div className="row mb-3">
                             <div className="col-md-4">
                                 <label className="form-label fw-bold">Bezpečnostní list</label>
@@ -212,13 +209,11 @@ function EditSubstance() {
                                 />
                             </div>
                         </div>
-
                         <div className="row mb-0">
                             <label className="form-label fw-bold col-md-3">Vlastnost</label>
                             <label className="form-label fw-bold col-md-2">Kategorie</label>
                             <label className="form-label fw-bold col-md-2">Typ expozice</label>
                         </div>
-
                         {substance.properties.map((property, index) => (
                             <div key={index} className="row mb-3">
                                 <div className="col-md-3">
@@ -247,7 +242,7 @@ function EditSubstance() {
                                         required={property.name}
                                         disabled={propertyList.find(p => p.name === property.name)?.categories.length === 0}
                                     >
-                                        <option value="" disabled></option>
+                                        <option value="" disabled />
                                         {propertyList.find(p => p.name === property.name)?.categories.map((category) => (
                                             <option key={category} value={category}>
                                                 {category}
@@ -262,9 +257,9 @@ function EditSubstance() {
                                         onChange={(e) => handlePropertyChange(index, "exposure_route", e.target.value)}
                                         className="form-select"
                                         required={property.category}
-                                        disabled={propertyList.find(p => p.name === property.name)?.exposure_routes.length === 0}
+                                        disabled={(propertyList.find(p => p.name === property.name)?.exposure_routes?.length ?? 0) === 0}
                                     >
-                                        <option value="" disabled/>
+                                        <option value="" disabled />
                                         {propertyList.find(p => p.name === property.name)?.exposure_routes.map((exposure_route) => (
                                             <option key={exposure_route} value={exposure_route}>
                                                 {exposure_route}

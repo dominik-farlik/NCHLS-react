@@ -93,7 +93,10 @@ function Substances() {
                                     </div>
                                 ))}
                                 </td>
-                                <td onClick={() => openSafetySheet(substance._id.$oid)}>
+                                <td
+                                    onClick={() => openSafetySheet(substance._id.$oid)}
+                                    title={substance.safety_sheet}
+                                >
                                     {substance.safety_sheet ? "💾" : ""}
                                 </td>
                                 <td

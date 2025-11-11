@@ -18,18 +18,19 @@ function Substance({ substance_id, handleSubmit, heading }) {
 
 
     useEffect(() => {
-        substance_id && axios.get(`/api/substances/${substance_id}`)
-            .then(res => {
-                const data = res.data;
-                setSubstance({
-                    ...data,
-                    properties: [
-                        ...(data.properties ?? []),
-                        { name: '', category: '', exposure_route: '' }
-                    ]
+        if (substance_id) {
+            axios.get(`/api/substances/${substance_id}`)
+                .then(res => {
+                    const data = res.data;
+                    setSubstance({
+                        ...data,
+                        properties: [
+                            ...(data.properties ?? []).filter(p => p.name),
+                            { name: '', category: '', exposure_route: '' }
+                        ]
+                    });
                 });
-            });
-
+        }
     }, [substance_id]);
 
     useEffect(() => {

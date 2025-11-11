@@ -27,8 +27,6 @@ function Substances() {
         window.open(`/api/substances/safety_sheet/${substance_id}`);
     }
 
-    const asYesNo = (v) => (v ? "ano" : "ne");
-
     return (
         <div className="mt-4 px-5">
             <div className="d-flex justify-content-between align-items-center mb-3">
@@ -84,8 +82,8 @@ function Substances() {
                                 </td>
                                 <td>{substance.substance_mixture ?? ""}</td>
                                 <td>{substance.physical_form ?? ""}</td>
-                                <td>{asYesNo(substance.iplp)}</td>
-                                <td>{asYesNo(substance.disinfection)}</td>
+                                <td>{substance.iplp ? "ano" : "ne"}</td>
+                                <td>{substance.disinfection ? "ano" : "ne"}</td>
                                 <td>
                                     {substance.properties.map((property, index) => (
                                     <div key={index}>

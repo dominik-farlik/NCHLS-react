@@ -7,14 +7,26 @@ import json
 
 from core.config import settings
 from models.substance import Substance
-from db.repo import insert_substance, fetch_substances, fetch_substance, db_update_substance, fetch_safety_sheet
+from db.repo import insert_substance, fetch_substances, fetch_substance, db_update_substance, fetch_safety_sheet, \
+    fetch_substance_departments
 
 router = APIRouter()
 
 @router.get("")
 async def list_substances():
     cursor = fetch_substances()
-    return json.loads(dumps(cursor))
+    substances = list(cursor)
+
+    for substance in substances:
+        departments_cursor = fetch_substance_departments(substance["_id"])
+        departments_docs = list(departments_cursor)
+
+        if departments_docs:
+            substance["departments"] = departments_docs[0]["departments"]
+        else:
+            substance["departments"] = []
+
+    return json.loads(dumps(substances))
 
 @router.get("/{substance_id}")
 async def get_substance(substance_id: str):

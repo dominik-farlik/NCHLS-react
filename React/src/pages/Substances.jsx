@@ -63,6 +63,7 @@ function Substances() {
                         <th>Kategorie nebezpečnosti</th>
                         <th>EC50</th>
                         <th>Jednotka</th>
+                        <th>Oddělení</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -120,6 +121,7 @@ function Substances() {
                                     style={{ maxWidth: "60px" }}
                                     title={substance.unit}
                                 >{substance.unit ?? ""}</td>
+                                <td>{substance.departments.map((department) => (<div key={department}>{department}</div>))}</td>
                             </tr>
                         );
                     })}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {Link, useNavigate} from "react-router-dom";
 import axios from 'axios';
+import {openSafetySheet} from "../utils/fileUtils.js";
 
 function Substances() {
     const [substances, setSubstances] = useState([]);
@@ -22,10 +23,6 @@ function Substances() {
         );
         setFiltered(filteredList);
     }, [search, substances]);
-
-    function openSafetySheet(substance_id) {
-        window.open(`/api/substances/safety_sheet/${substance_id}`);
-    }
 
     return (
         <div className="mt-4 px-5">

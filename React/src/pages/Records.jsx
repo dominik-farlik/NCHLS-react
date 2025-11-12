@@ -27,7 +27,8 @@ function Records() {
                 />
                 <Link
                     to="/add-record"
-                    className="btn btn-primary btn-block"
+                    className="btn btn-block"
+                    style={{ backgroundColor: "pink" }}
                 >
                     Přidat
                 </Link>

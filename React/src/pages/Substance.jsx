@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import {openSafetySheet} from "../utils/fileUtils.js";
 
 function Substance({ substance_id, handleSubmit, heading }) {
         const [substance, setSubstance] = useState({
@@ -18,20 +19,26 @@ function Substance({ substance_id, handleSubmit, heading }) {
 
 
     useEffect(() => {
-        if (substance_id) {
-            axios.get(`/api/substances/${substance_id}`)
-                .then(res => {
-                    const data = res.data;
-                    setSubstance({
-                        ...data,
-                        properties: [
-                            ...(data.properties ?? []).filter(p => p.name),
-                            { name: '', category: '', exposure_route: '' }
-                        ]
-                    });
-                });
-        }
+        if (!substance_id) return;
+
+        Promise.all([
+            axios.get(`/api/substances/${substance_id}`),
+            axios.get(`/api/substances/safety_sheet/${substance_id}`)
+        ]).then(([substance_res, file_res]) => {
+            const data = substance_res.data;
+            const file = file_res.data;
+            setSubstance({
+                ...data,
+                properties: [
+                    ...(data.properties ?? []).filter(p => p.name),
+                    { name: '', category: '', exposure_route: '' }
+                ],
+                safety_sheet: file,
+            });
+        });
     }, [substance_id]);
+
+
 
     useEffect(() => {
         axios.get("/api/properties")
@@ -53,6 +60,13 @@ function Substance({ substance_id, handleSubmit, heading }) {
         const { name, value } = e.target;
         setSubstance((prev) => ({ ...prev, [name]: value }));
     };
+
+    const handleFileChange = (file) => {
+        setSubstance({
+            ...substance,
+            safety_sheet: file,
+        })
+    }
 
     const handlePropertyChange = (index, field, value) => {
         const current = substance.properties;
@@ -187,15 +201,17 @@ function Substance({ substance_id, handleSubmit, heading }) {
                             <input
                                 id="safety_sheet"
                                 name="safety_sheet"
-                                onChange={(e) =>
-                                    setSubstance({
-                                        ...substance,
-                                        safety_sheet: e.target.files[0],
-                                    })}
+                                onChange={(e) => handleFileChange(e.target.files[0])}
                                 type="file"
                                 className="form-control"
                             />
                         </div>
+                        {substance.safety_sheet &&
+                            <div className="col-md-3">
+                                <label className="form-label fw-bold text-muted">Aktuální bezpečnostní list</label>
+                                <button className="btn btn-light form-control" onClick={() => openSafetySheet(substance_id)}>💾</button>
+                            </div>
+                        }
                     </div>
                     <div className="row mb-0">
                         <label className="form-label fw-bold col-md-3">Vlastnost</label>
@@ -270,7 +286,11 @@ function Substance({ substance_id, handleSubmit, heading }) {
                             </div>
                         </div>
                     ))}
-                    <button type="submit" className="btn btn-primary w-100">
+                    <button
+                        type="submit"
+                        className="btn w-100"
+                        style={{ backgroundColor: "pink" }}
+                    >
                         Uložit
                     </button>
                 </form>

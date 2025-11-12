@@ -104,7 +104,6 @@ def fetch_safety_sheet(substance_id: str):
     substance = db.substances.find_one({"_id": ObjectId(substance_id)})
     return f"{settings.UPLOAD_DIR}/{substance['safety_sheet']}"
 
-from bson import ObjectId
 
 def fetch_substance_departments(substance_id: ObjectId):
     """Fetch departments, where is substance located."""
@@ -130,4 +129,39 @@ def fetch_substance_departments(substance_id: ObjectId):
             }
         }
     ])
+
+
+def fetch_amount_sum_substance(substance_id: ObjectId):
+    """Fetch an amount sum of substance from the collection."""
+    return db.records.aggregate([
+        {
+            "$match": {
+                "substance_id": substance_id
+            }
+        },
+        {
+            "$group": {
+                "_id": "$substance_id",
+                "total_amount": {"$sum": "$amount"}
+            }
+        },
+        {
+            "$lookup": {
+                "from": "substances",
+                "localField": "_id",
+                "foreignField": "_id",
+                "as": "substance"
+            }
+        },
+        {"$unwind": "$substance"},
+        {
+            "$project": {
+                "_id": 0,
+                "substance_id": "$_id",
+                "total_amount": 1,
+                "unit": "$substance.unit"
+            }
+        }
+    ])
+
 

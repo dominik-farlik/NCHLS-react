@@ -5,10 +5,11 @@ from bson import ObjectId
 from bson.json_util import dumps
 import json
 
+from constants.unit import to_tons
 from core.config import settings
 from models.substance import Substance
 from db.repo import insert_substance, fetch_substances, fetch_substance, db_update_substance, fetch_safety_sheet, \
-    fetch_substance_departments
+    fetch_substance_departments, fetch_amount_sum_substance
 
 router = APIRouter()
 
@@ -18,15 +19,22 @@ async def list_substances():
     substances = list(cursor)
 
     for substance in substances:
-        departments_cursor = fetch_substance_departments(substance["_id"])
-        departments_docs = list(departments_cursor)
-
+        departments_docs = list(fetch_substance_departments(substance["_id"]))
         if departments_docs:
             substance["departments"] = departments_docs[0]["departments"]
         else:
             substance["departments"] = []
 
+        amount_docs = list(fetch_amount_sum_substance(substance["_id"]))
+        if amount_docs and "unit" in amount_docs[0]:
+            total_amount = amount_docs[0]["total_amount"]
+            unit = amount_docs[0]["unit"]
+            substance["max_tons"] = to_tons(total_amount, unit)
+        else:
+            substance["max_tons"] = 0
+
     return json.loads(dumps(substances))
+
 
 @router.get("/{substance_id}")
 async def get_substance(substance_id: str):

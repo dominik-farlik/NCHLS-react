@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import {openSafetySheet} from "../utils/fileUtils.jsx";
+import {useNavigate} from "react-router-dom";
 
 function Substance({ substance_id, handleSubmit, heading }) {
     const [substance, setSubstance] = useState({
@@ -17,7 +18,7 @@ function Substance({ substance_id, handleSubmit, heading }) {
     const [propertyList, setPropertyList] = useState([]);
     const [unitList, setUnitList] = useState([]);
     const [physicalFormList, setPhysicalFormList] = useState([]);
-
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (!substance_id) return;
@@ -43,9 +44,6 @@ function Substance({ substance_id, handleSubmit, heading }) {
             });
     }, [substance_id]);
 
-
-
-
     useEffect(() => {
         axios.get("/api/properties")
             .then(res => {
@@ -61,6 +59,13 @@ function Substance({ substance_id, handleSubmit, heading }) {
                 setPhysicalFormList(res.data);
             })
     }, []);
+
+    function handleDelete() {
+        axios.delete(`/api/substances/${substance_id}`)
+            .then(() => {
+                navigate("/substances");
+            })
+    }
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -303,13 +308,22 @@ function Substance({ substance_id, handleSubmit, heading }) {
                             </div>
                         </div>
                     ))}
-                    <button
-                        type="submit"
-                        className="btn w-100"
-                        style={{ backgroundColor: "pink" }}
-                    >
-                        Uložit
-                    </button>
+                    <div className="d-flex justify-content-between">
+                        <button
+                            type="submit"
+                            className="form-control btn"
+                            style={{ backgroundColor: "pink" }}
+                        >
+                            Uložit
+                        </button>
+                        <button
+                            type="button"
+                            className="form-control btn btn-outline-danger w-auto text-nowrap"
+                            onClick={handleDelete}
+                        >
+                            Odebrat
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

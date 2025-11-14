@@ -9,9 +9,10 @@ from constants.unit import to_tons
 from core.config import settings
 from models.substance import Substance
 from db.repo import insert_substance, fetch_substances, fetch_substance, db_update_substance, fetch_safety_sheet, \
-    fetch_substance_departments, fetch_amount_sum_substance
+    fetch_substance_departments, fetch_amount_sum_substance, db_delete_substance
 
 router = APIRouter()
+
 
 @router.get("")
 async def list_substances():
@@ -46,15 +47,18 @@ async def get_substance(substance_id: str):
     doc["id"] = str(doc.pop("_id"))
     return doc
 
+
 @router.post("")
 async def add_substance(substance: Substance = Body(...)):
     inserted_id = insert_substance(substance.model_dump())
     return {"id": str(inserted_id)}
 
+
 @router.put("")
 async def update_substance(substance: Substance = Body(...)):
     db_update_substance(substance)
     return {"status": "ok"}
+
 
 @router.post("/safety_sheet")
 async def add_safety_sheet(safety_sheet: UploadFile):
@@ -62,8 +66,9 @@ async def add_safety_sheet(safety_sheet: UploadFile):
         file.write(await safety_sheet.read())
     print(f"Saved {safety_sheet.filename}")
 
+
 @router.get("/safety_sheet/{substance_id}")
-def download_safety_sheet(substance_id: str):
+async def download_safety_sheet(substance_id: str):
     path = fetch_safety_sheet(substance_id)
     return FileResponse(
         path,
@@ -71,3 +76,8 @@ def download_safety_sheet(substance_id: str):
         filename=Path(path).name,
         headers={"Content-Disposition": f'inline; filename="{Path(path).name}"'}
     )
+
+
+@router.delete("/{substance_id}")
+async def delete_substance(substance_id: str):
+    db_delete_substance(substance_id)

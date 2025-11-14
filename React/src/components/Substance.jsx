@@ -3,7 +3,7 @@ import axios from "axios";
 import {openSafetySheet} from "../utils/fileUtils.jsx";
 
 function Substance({ substance_id, handleSubmit, heading }) {
-        const [substance, setSubstance] = useState({
+    const [substance, setSubstance] = useState({
         name: '',
         unit: '',
         iplp: false,
@@ -12,6 +12,7 @@ function Substance({ substance_id, handleSubmit, heading }) {
         physical_form: '',
         properties: [{ name: '', category: '', exposure_route: ''}],
         safety_sheet: undefined,
+        safety_sheet_rev_date: '',
     });
     const [propertyList, setPropertyList] = useState([]);
     const [unitList, setUnitList] = useState([]);
@@ -212,10 +213,21 @@ function Substance({ substance_id, handleSubmit, heading }) {
                             />
                         </div>
                         {substance_id && substance.safety_sheet &&
-                            <div className="col-md-3 flex-column align-content-end">
-                                <a className="btn btn-light form-control w-25" onClick={() => openSafetySheet(substance_id)}>💾</a>
+                            <div className="col-md-1 flex-column align-content-end">
+                                <a className="btn btn-light form-control" onClick={() => openSafetySheet(substance_id)}>💾</a>
                             </div>
                         }
+                        {substance.safety_sheet && <div className="col-md-2">
+                            <label htmlFor="safety_sheet_rev_date" className="form-label fw-bold">Datum revize</label>
+                            <input
+                                id="safety_sheet_rev_date"
+                                name="safety_sheet_rev_date"
+                                type="number"
+                                value={substance.safety_sheet_rev_date}
+                                onChange={handleChange}
+                                className="form-control"
+                            />
+                        </div>}
                     </div>
                     <div className="row mb-0">
                         <label className="form-label fw-bold col-md-3">Vlastnost</label>
@@ -275,7 +287,7 @@ function Substance({ substance_id, handleSubmit, heading }) {
                                     ))}
                                 </select>
                             </div>
-                            <div className="col text-end">
+                            <div className="col">
                                 <button
                                     type="button"
                                     className="btn btn-outline-danger"

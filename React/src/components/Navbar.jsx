@@ -50,7 +50,7 @@ function Navbar() {
                                 }
                                 to="/departments"
                             >
-                                Oddělení
+                                Inventura
                             </NavLink>
                         </li>
                     </ul>

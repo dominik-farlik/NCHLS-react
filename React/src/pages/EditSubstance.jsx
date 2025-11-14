@@ -29,7 +29,7 @@ function EditSubstance() {
                 setAlert({message: error.response.data.detail, type: "danger"});
             })
 
-        if (substance.safety_sheet) {
+        if (substance.safety_sheet && substance.safety_sheet instanceof File) {
             const formData = new FormData();
             formData.append("safety_sheet", substance.safety_sheet);
 

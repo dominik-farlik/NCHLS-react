@@ -97,7 +97,7 @@ function Substances() {
                                     {substance.safety_sheet ? "💾" : ""}
                                 </td>
                                 <td
-                                    className="text-truncate"
+                                    className="text-truncate text-end"
                                     style={{ maxWidth: "50px" }}
                                     title={substance.max_tons}
                                 >

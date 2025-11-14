@@ -1,37 +1,107 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import {Link, useParams} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Records() {
+    const [allRecords, setAllRecords] = useState([]);
     const [records, setRecords] = useState([]);
-    const { departmentName } = useParams();
+    const [departments, setDepartments] = useState([]);
+    const [years, setYears] = useState([]);
+    const [filter, setFilter] = useState({
+        department: "",
+        year: "",
+    });
 
     useEffect(() => {
-        axios.get("/api/records", { params: { department_name: departmentName } })
+        axios.get("/api/records")
             .then(response => {
-                setRecords(response.data);
+                const data = response.data;
+
+                setAllRecords(data);
+                setRecords(data);
+
+                const departments = [...new Set(data.map(r => r.location_name))]
+                setDepartments(departments);
+
+                const years = [...new Set(data.map(r => r.year))]
+                setYears(years);
             })
-    }, [departmentName]);
+    }, []);
+
+    function handleFilterChange(e) {
+        const { id, value } = e.target;
+
+        const updatedFilter = {
+            ...filter,
+            [id]: value
+        };
+
+        setFilter(updatedFilter);
+
+        let filtered = [...allRecords];
+
+        if (updatedFilter.department) {
+            filtered = filtered.filter(r => r.location_name === updatedFilter.department);
+        }
+
+        if (updatedFilter.year) {
+            filtered = filtered.filter(r => String(r.year) === String(updatedFilter.year));
+        }
+
+        setRecords(filtered);
+    }
 
     return (
         <div className="container mt-4">
-            <div className="d-flex justify-content-between align-items-center mb-3">
-                <input
-                    type="text"
-                    placeholder="Hledej látku..."
-                    //value={search}
-                    //onChange={e => setSearch(e.target.value)}
-                    className="form-control me-3"
-                    style={{ width: "auto" }}
-                    disabled
-                />
-                <Link
-                    to="/add-record"
-                    className="btn btn-block"
-                    style={{ backgroundColor: "pink" }}
-                >
-                    Přidat
-                </Link>
+            <div className="row mb-4 align-items-center">
+                <div className="col-auto align-self-end">
+                    <Link
+                        to="/add-record"
+                        className="form-control btn btn-block"
+                        style={{ backgroundColor: "pink" }}
+                    >
+                        Přidat
+                    </Link>
+                </div>
+                <div className="col-md-3">
+                    <label className="form-label fw-bold">Látka</label>
+                    <input
+                        type="text"
+                        placeholder="Hledej ..."
+                        //value={search}
+                        //onChange={e => setSearch(e.target.value)}
+                        className="form-control"
+                        disabled
+                    />
+                </div>
+                <div className="col-auto">
+                    <label className="form-label fw-bold">Rok</label>
+                    <select
+                        id="year"
+                        className="form-control"
+                        value={filter.year}
+                        onChange={handleFilterChange}
+                    >
+                        <option value="">Vše</option>
+                        {years.map(year => (
+                            <option key={year} value={year}>{year}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="col-md-3">
+                    <label className="form-label fw-bold">Oddělení</label>
+                    <select
+                        id="department"
+                        className="form-select"
+                        value={filter.department}
+                        onChange={handleFilterChange}
+                    >
+                        <option value="">Vše</option>
+                        {departments.map(department => (
+                            <option key={department} value={department}>{department}</option>
+                        ))}
+                    </select>
+                </div>
             </div>
             <div className="table-responsive" style={{ maxHeight: "79vh", overflowY: "auto" }}>
                 <table className="table table-hover align-middle table-bordered" style={{ position: "relative" }}>
@@ -42,8 +112,6 @@ function Records() {
                             top: 0,
                         }}>
                     <tr className="border" style={{ position: "sticky", top: "0" }}>
-                        <th>Rok</th>
-                        <th>Místo uložení</th>
                         <th>Látka</th>
                         <th>Množství</th>
                     </tr>
@@ -51,8 +119,6 @@ function Records() {
                     <tbody>
                     {records.map((record) => (
                         <tr key={record._id?.$oid}>
-                            <td>{record.year}</td>
-                            <td>{record.location_name}</td>
                             <td>{record.substance.name}</td>
                             <td>{record.amount} {record.substance.unit || "ks"}</td>
                         </tr>

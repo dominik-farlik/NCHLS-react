@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {NavLink} from "react-router-dom";
 
@@ -14,21 +14,26 @@ function Departments() {
 
     return (
         <div className="container mt-4">
-            <ul className="list-group w-50 mx-auto d-block text-center">
+            <h1 className="mb-4 text-center">Vyber oddělení</h1>
+
+            <div className="row row-cols-1 row-cols-md-3 g-3 mb-4">
                 {departments.map((department) => (
-                    <li
-                        key={department.name}
-                        className="list-group-item border-0 p-0"
-                    >
+                    <div className="col" key={department.name}>
                         <NavLink
-                            className="list-group-item list-group-item-action"
                             to={`/inventory/${department.name}`}
+                            className="text-decoration-none"
                         >
-                            {department.id}. {department.name}
+                            <div className="card h-100 shadow-sm">
+                                <div className="card-body text-center" style={{ backgroundColor: "rgba(253,190,201,0.15)" }}>
+                                    <h5 className="card-title mb-0">
+                                        {department.id && `${department.id}.`} {department.name}
+                                    </h5>
+                                </div>
+                            </div>
                         </NavLink>
-                    </li>
+                    </div>
                 ))}
-            </ul>
+            </div>
         </div>
     )
 }

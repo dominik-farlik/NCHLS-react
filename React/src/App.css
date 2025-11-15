@@ -1,3 +1,8 @@
 .pink-thead th {
     background-color: rgb(255, 224, 232) !important ;
 }
+
+.nav-link-big {
+    font-size: 1.2rem !important ;
+    font-weight: 400 !important ;
+}

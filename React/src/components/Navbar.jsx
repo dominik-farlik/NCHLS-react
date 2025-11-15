@@ -26,7 +26,7 @@ function Navbar() {
                         <li className="nav-item">
                             <NavLink
                                 className={({isActive}) =>
-                                    "nav-link" + (isActive ? " active" : "")
+                                    "nav-link nav-link-big" + (isActive ? " active" : "")
                                 }
                                 to="/substances"
                             >
@@ -36,7 +36,7 @@ function Navbar() {
                         <li className="nav-item">
                             <NavLink
                                 className={({isActive}) =>
-                                    "nav-link" + (isActive ? " active" : "")
+                                    "nav-link nav-link-big" + (isActive ? " active" : "")
                                 }
                                 to="/records"
                             >
@@ -46,7 +46,7 @@ function Navbar() {
                         <li className="nav-item">
                             <NavLink
                                 className={({isActive}) =>
-                                    "nav-link" + (isActive ? " active" : "")
+                                    "nav-link nav-link-big" + (isActive ? " active" : "")
                                 }
                                 to="/departments"
                             >
